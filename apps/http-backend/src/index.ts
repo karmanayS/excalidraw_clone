@@ -126,6 +126,28 @@ app.post("/create-room",userAuthMiddleware,async(req,res) => {
     }    
 })
 
+app.get("/chats",userAuthMiddleware,async(req,res) => {
+    const roomId = Number(req.query.roomId)
+    try {
+        const chats = await prisma.chats.findMany({
+            where: {
+                roomId
+            }
+        })
+        if (!chats) return res.json({success: false,message: "Incorrect room ID"})
+        return res.json({
+            success:true,
+            chats
+        })    
+    } catch (err) {
+        console.log(err)
+        return res.json({
+            success: false,
+            message: "Error while fetching previous chats of the room"
+        })
+    }     
+})
+
 app.listen(PORT,() => {
     console.log(`listening on port ${PORT}...`)
 })
