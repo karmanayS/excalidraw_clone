@@ -4,3 +4,4 @@
 //understand how u can do the user validation in the ws-server in the first http request before it modifies into a websocket connection
 //make sure to send the auth token from the client for the socket io server
 //add the connect_error event in the client if the socket io middleware throws error 
+// correct status codes in the http endpoints
