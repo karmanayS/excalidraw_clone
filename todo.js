@@ -1,0 +1,6 @@
+//opimise turbo build step in lecture 1 step 8 ==>  watch it from cohort 3 turborepo lecture
+//make a common folder that contains our owned defined types and zodschemas for things like signup and also contains JWT_secret
+//env files should be created in the root or for specific applications
+//understand how u can do the user validation in the ws-server in the first http request before it modifies into a websocket connection
+//make sure to send the auth token from the client for the socket io server
+//add the connect_error event in the client if the socket io middleware throws error 
