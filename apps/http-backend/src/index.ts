@@ -3,7 +3,9 @@ import jwt from "jsonwebtoken"
 import cors from "cors"
 import cookieParser from "cookie-parser"
 import { userAuthMiddleware } from "./middlewares/userAuth";
-import { JWT_SECRET, userAuthSchema } from "@repo/common/common"
+import { JWT_SECRET, signupSchema, signinSchema } from "@repo/common/common"
+import { prisma } from "@repo/db"
+import bcrypt from "bcrypt"
 
 const app = express()
 const PORT = 3001
@@ -15,18 +17,22 @@ app.use(cors({
 }))
 app.use(cookieParser())
 
-app.post("/signup",(req,res) => {
-    const {email, password} = req.body
-    const result = userAuthSchema.safeParse({
-        email, password
+app.post("/signup",async(req,res) => {
+    const {username, email, password} = req.body
+    const result = signupSchema.safeParse({
+        username, email, password
     })
     if (!result.success) return res.json({
         success: false,
         message: result.error.message
     })
-    //db query to check if the user already exists
-    //hash the password
-    //db query to create new user
+    const existingUser = await prisma.users.findFirst({
+        where: {
+            email,password
+        }
+    }) 
+    if (existingUser) return res.json({success: false, message:"User already exists please signin"})
+    const hashedPassword = bcrypt.hash(password,10)
     res.json({
         success:true,
         message: "Signed up successfully"
@@ -35,7 +41,7 @@ app.post("/signup",(req,res) => {
 
 app.post("/signin",(req,res) => {
     const {email,password} = req.body
-    const result = userAuthSchema.safeParse({
+    const result = signinSchema.safeParse({
         email, password
     })
     if (!result.success) return res.json({
@@ -58,8 +64,7 @@ app.post("/signin",(req,res) => {
 app.post("/create-room",userAuthMiddleware,(req,res) => {
     const userId = req.userId
     const {roomName}:{roomName:string} = req.body
-    //room names can be same but id's cannot so when the client sends a message the websocket event type will be roomID and not the name
-    //db query to create the room 
+    // room name is a unique field in db so put create room logic in try catch and if a room name already exists while creating the room it should enter in the catch block
     const roomId = 2 // get this from the db
     return res.json({
         success:true,
