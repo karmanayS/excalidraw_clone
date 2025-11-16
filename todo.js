@@ -6,3 +6,4 @@
 //add the connect_error event in the client if the socket io middleware throws error 
 // correct status codes in the http endpoints
 // we should probably check for unique username in the signup route
+// after signing up the user should be redirected to the signin route to create cookie session

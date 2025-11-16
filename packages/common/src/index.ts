@@ -14,3 +14,7 @@ export const signinSchema = z.object({
     password: z.string().min(6,{error: "Password should be atleast 6 charachters long"})
 })
 
+export const roomSchema = z.object({
+    name: z.string().min(4,{error: "Room name should be atleast 4 charachters long"})
+})
+
