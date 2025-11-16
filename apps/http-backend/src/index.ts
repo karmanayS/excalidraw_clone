@@ -4,8 +4,8 @@ import cors from "cors"
 import cookieParser from "cookie-parser"
 import { userAuthMiddleware } from "./middlewares/userAuth";
 import { JWT_SECRET, signupSchema, signinSchema, roomSchema } from "@repo/common/common"
-import { prisma } from "@repo/db"
 import * as bcrypt from "bcrypt"
+import { prisma } from "@repo/db";
 
 const app = express()
 const PORT = 3001

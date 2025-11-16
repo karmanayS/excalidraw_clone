@@ -8,3 +8,4 @@
 // we should probably check for unique username in the signup route
 // after signing up the user should be redirected to the signin route to create cookie session
 // check the http file for remaining todos
+// .env.example
