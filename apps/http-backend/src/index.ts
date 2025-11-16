@@ -96,20 +96,34 @@ app.post("/signin",async (req,res) => {
 })
 
 app.post("/create-room",userAuthMiddleware,async(req,res) => {
-    const userId = req.userId
+    const userId = req.userId as string
     const {roomName}:{roomName:string} = req.body
-    const result = roomSchema.safeParse({
-        name: roomName
-    })
-    if (!result.success) return res.json({
-        success: false,
-        message: result.error.message
-    })
-    const roomId = 2 // get this from the db
-    return res.json({
-        success:true,
-        message: "Created room successfully"
-    })
+    try {
+        const result = roomSchema.safeParse({
+            name: roomName
+        })
+        if (!result.success) return res.json({
+            success: false,
+            message: result.error.message
+        })
+        const newRoom = prisma.rooms.create({
+            data: {
+                name: roomName,
+                adminId: userId
+            }
+        })
+        const roomId = (await newRoom).id
+        return res.json({
+            success:true,
+            message: "Created room successfully"
+        })
+    } catch (err) {
+        console.log(err)
+        return res.json({
+            success: false,
+            message: "Error while creating room"
+        })
+    }    
 })
 
 app.listen(PORT,() => {
