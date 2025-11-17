@@ -11,18 +11,39 @@ const PORT = 8080
 
 io.use((socket,next) => {
     console.log("Inside socket middleware")
-    const token:string = socket.handshake.auth.token; 
-    const decoded = jwt.verify(token,JWT_SECRET) as JwtPayload
-    if (!decoded.userId) {
-        console.log("caught error")
-        const err = new Error("Error while authenticating user in ws-server")
-        next(err)  
-    }
-    next() 
+    try {
+        const token = socket.handshake.headers.token
+        if (typeof(token) !== "string" || !token) {next(new Error("Invalid auth token"))}
+        const decoded = jwt.verify(token as string,JWT_SECRET) as JwtPayload
+        if (!decoded.userId) {
+            const err = new Error("Error while authenticating user in ws-server")
+            next(err)  
+        }
+        next()
+    } catch (err) {
+        console.log(err)
+        next(new Error("User authentication failed"))
+    }     
 })
 
 io.on('connection', (socket) => {
-  console.log('a user connected');
+  // join room logic
+  socket.on("join",(roomName:string) => {
+    console.log("joined room : ", roomName)
+    socket.join(roomName)
+  })
+
+  //send Message
+  socket.on("sendMessage",(data:{roomName:string,message:string}) => {
+    console.log(data)
+    socket.to(data.roomName).emit("message",data.message); 
+  })
+
+  //leave a room
+  socket.on("leave",(roomName:string) => {
+    console.log("left room : ", roomName)
+    socket.leave(roomName)
+  })
 });
 
 server.listen(PORT,() => {

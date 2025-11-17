@@ -12,3 +12,10 @@
 // dont we have to create a dist folder for db package ?
 // jwt secret import from env file not working 
 // how is cors working with postman even if i have domain set to the url of the nextjs app?
+//For the chat app to store messages to db , first push them to a queue from ws-server and then a worker should push them to db
+
+
+//FE
+//toast message in Auth component
+//landing page using lovable etc AI
+//api endpoint hardcoded

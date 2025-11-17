@@ -119,13 +119,17 @@ app.post("/create-room",userAuthMiddleware,async(req,res) => {
     }    
 })
 
-app.get("/chats",userAuthMiddleware,async(req,res) => {
-    const roomId = Number(req.query.roomId)
+app.get("/chats/:roomId",userAuthMiddleware,async(req,res) => {
+    const roomId = Number(req.params.roomId)
     try {
         const chats = await prisma.chats.findMany({
             where: {
                 roomId
-            }
+            }, 
+            orderBy : {
+                id : "desc"
+            },
+            take:50
         })
         if (!chats) return res.json({success: false,message: "Incorrect room ID"})
         return res.json({
