@@ -1,7 +1,5 @@
-import { error } from "console"
 import * as z from "zod"
-
-export const JWT_SECRET = process.env.JWT_SECRET as string
+export const JWT_SECRET = "karmanay"
 
 export const signupSchema = z.object({
     username: z.string().min(6,{error: "Username should be atleast 6 charachters long"}),

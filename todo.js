@@ -9,3 +9,6 @@
 // after signing up the user should be redirected to the signin route to create cookie session
 // check the http file for remaining todos
 // .env.example
+// dont we have to create a dist folder for db package ?
+// jwt secret import from env file not working 
+// how is cors working with postman even if i have domain set to the url of the nextjs app?

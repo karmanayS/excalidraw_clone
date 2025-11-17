@@ -5,7 +5,7 @@ import cookieParser from "cookie-parser"
 import { userAuthMiddleware } from "./middlewares/userAuth";
 import { JWT_SECRET, signupSchema, signinSchema, roomSchema } from "@repo/common/common"
 import * as bcrypt from "bcrypt"
-import { prisma } from "@repo/db";
+import { prisma } from "@repo/db/client";
 
 const app = express()
 const PORT = 3001
@@ -25,14 +25,8 @@ app.post("/signup",async(req,res) => {
         })
         if (!result.success) return res.json({
             success: false,
-            message: result.error.message
+            message: JSON.parse(result.error.message)[0].message
         })
-        const existingUser = await prisma.users.findFirst({
-            where: {
-                email,password
-            }
-        }) 
-        if (existingUser) return res.json({success: false, message:"User already exists please signin"})
         const hashedPassword = await bcrypt.hash(password,10)
         await prisma.users.create({
             data: {
@@ -48,7 +42,7 @@ app.post("/signup",async(req,res) => {
         console.log(err)
         return res.json({
             success: false,
-            message: "Error while signing up"
+            message: "Error while signing up, Please signin if you already have an account"
         })
     }    
 })
@@ -61,16 +55,16 @@ app.post("/signin",async (req,res) => {
         })
         if (!result.success) return res.json({
             success: false,
-            message: result.error.message
+            message: JSON.parse(result.error.message)[0].message
         })
         const existingUser = await prisma.users.findFirst({
             where: {
-                email,password
+                email
             }
         })
         if (!existingUser) return res.json({
             success : false,
-            message: "User doesnt exist with the following credentials, Please enter the correct credentials"
+            message: "Invalid email, enter the right email or signup"
         })
         const compare = await bcrypt.compare(password,existingUser.password)
         if (!compare) return res.json({
@@ -112,7 +106,6 @@ app.post("/create-room",userAuthMiddleware,async(req,res) => {
                 adminId: userId
             }
         })
-        const roomId = (await newRoom).id
         return res.json({
             success:true,
             message: "Created room successfully"
