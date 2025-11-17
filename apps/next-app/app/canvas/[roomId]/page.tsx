@@ -46,6 +46,6 @@ export default function Canvas() {
     },[canvasRef])
 
     return <div>
-        <canvas ref={canvasRef} width={1000} height={500} className="bg-green-300" ></canvas>
+        <canvas ref={canvasRef} width={1396} height={648}></canvas>
     </div>
 }
