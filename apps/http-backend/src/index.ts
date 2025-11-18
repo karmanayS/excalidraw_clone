@@ -95,7 +95,7 @@ app.post("/create-room",userAuthMiddleware,async(req,res) => {
             success: false,
             message: result.error.message
         })
-        const newRoom = prisma.rooms.create({
+        await prisma.rooms.create({
             data: {
                 name: roomName,
                 adminId: userId
@@ -114,12 +114,18 @@ app.post("/create-room",userAuthMiddleware,async(req,res) => {
     }    
 })
 
-app.get("/chats/:roomId",userAuthMiddleware,async(req,res) => {
-    const roomId = Number(req.params.roomId)
+app.get("/chats/:roomName",userAuthMiddleware,async(req,res) => {
+    const roomName = req.params.roomName
     try {
+        const existingRoom = await prisma.rooms.findFirst({
+            where: {
+                name: roomName
+            }
+        })
+        if (!existingRoom) return res.json({success: false,message:"Room doesnt exist with the following name"})
         const chats = await prisma.chats.findMany({
             where: {
-                roomId
+                roomId : existingRoom.id
             }, 
             orderBy : {
                 id : "desc"

@@ -1,6 +1,6 @@
 import { API_URL, WS_URL } from "@/config/config"
 import axios from "axios"
-import { io, Socket } from "socket.io-client"
+import { Socket } from "socket.io-client"
 
 type Shape = {
     type:"rect"
@@ -24,6 +24,7 @@ export async function draw(canvas:HTMLCanvasElement,roomId:string,socket:Socket,
     ctx.strokeStyle = strokeStyle
     
     const shapes = await fetchShapes(roomId)
+    console.log(shapes)
     if (!shapes) return // toast error
     const existingShapes:Shape[] = shapes
 

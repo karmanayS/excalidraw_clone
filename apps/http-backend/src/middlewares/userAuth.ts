@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response  } from "express"
+import { NextFunction, Request, Response  } from "express"
 import jwt, { JwtPayload } from "jsonwebtoken"
 import { JWT_SECRET } from "@repo/common/common"
 

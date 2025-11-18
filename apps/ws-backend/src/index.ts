@@ -40,6 +40,8 @@ io.on('connection', (socket) => {
   //send Message
   socket.on("sendMessage",(data:{roomName:string,message:string}) => {
     console.log(data)
+    //push to a queue
+    
     socket.to(data.roomName).emit("message",data.message); 
   })
 
