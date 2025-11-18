@@ -27,7 +27,7 @@ model Rooms {
   name      String   @unique
   createdAt DateTime @default(now())
   adminId   String
-  admin     Users    @relation(fields: [adminId], references: [id])
+  admin     Users    @relation(fields: [adminId], references: [id], onDelete: Cascade)
   chats     Chats[]
 }
 
@@ -36,6 +36,6 @@ model Chats {
   content  String
   userId   String
   roomName String
-  user     Users  @relation(fields: [userId], references: [id])
-  room     Rooms  @relation(fields: [roomName], references: [name])
+  user     Users  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  room     Rooms  @relation(fields: [roomName], references: [name], onDelete: Cascade)
 }

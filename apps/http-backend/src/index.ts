@@ -128,18 +128,6 @@ app.get("/chats/:roomName",userAuthMiddleware,async(req,res) => {
             },
             take:50
         })
-        // content
-        // : 
-        // "{\"type\":\"rect\",\"x\":882,\"y\":239,\"width\":-198,\"height\":120}"
-        // id
-        // : 
-        // 3
-        // roomName
-        // : 
-        // "laksh"
-        // userId
-        // : 
-        // "200d44ae-ea3a-44ed-8e48-281fedfc6d9e"
         if (!chats) return res.json({success: false,message: "Incorrect room ID"})
         return res.json({
             success:true,
