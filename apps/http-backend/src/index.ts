@@ -1,7 +1,6 @@
 import express from "express";
 import jwt from "jsonwebtoken"
 import cors from "cors"
-import cookieParser from "cookie-parser"
 import { userAuthMiddleware } from "./middlewares/userAuth";
 import { JWT_SECRET, signupSchema, signinSchema, roomSchema } from "@repo/common/common"
 import * as bcrypt from "bcrypt"
@@ -12,10 +11,8 @@ const PORT = 3001
 
 app.use(express.json())
 app.use(cors({
-    credentials: true,
     origin: "http://localhost:3000" // this should be the frontend url
 }))
-app.use(cookieParser())
 
 app.post("/signup",async(req,res) => {
     const {username, email, password} = req.body
@@ -72,13 +69,11 @@ app.post("/signin",async (req,res) => {
             message: "Incorrect password"
         })
         const userId = existingUser.id
-        const token = jwt.sign({userId},JWT_SECRET) 
-        res.cookie("token",token,{
-            httpOnly:true,
-        }) // specify the same site or domain property
+        const token = jwt.sign({userId: userId},JWT_SECRET) 
         return res.json({
             success:true,
-            message: "Signed in successfully"
+            message: "Signed in successfully",
+            token
         })
     } catch (err) {
         console.log(err)

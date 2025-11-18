@@ -63,8 +63,9 @@ export function Auth({isSignin}:{isSignin:boolean}) {
                         password: passwordRef.current
                     })
                     if (!response.data.success) return // toast message with error
-                    //toast success message
+                    localStorage.setItem("token",response.data.token)
                     router.push("/dashboard")
+                    return
                 }
                 const response = await axios.post(url,{
                     username: usernameRef.current,
@@ -74,6 +75,7 @@ export function Auth({isSignin}:{isSignin:boolean}) {
                 if (!response.data.success) return // toast message with error
                 //toast success message
                 router.push("/signin") 
+                return
             }} type="submit" className="w-full">
                 { (isSignin) ? "Signin" : "Signup" }
             </Button>

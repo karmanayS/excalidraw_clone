@@ -6,13 +6,17 @@ import { JWT_SECRET } from "@repo/common/common"
 
 const app = express()
 const server = createServer(app)
-const io = new Server(server);
+const io = new Server(server,{
+  cors: {
+    origin: ["http://localhost:3000"]
+  }
+});
 const PORT = 8080
 
 io.use((socket,next) => {
     console.log("Inside socket middleware")
     try {
-        const token = socket.handshake.headers.token
+        const token = socket.handshake.auth.token;
         if (typeof(token) !== "string" || !token) {next(new Error("Invalid auth token"))}
         const decoded = jwt.verify(token as string,JWT_SECRET) as JwtPayload
         if (!decoded.userId) {
