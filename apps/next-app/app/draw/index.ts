@@ -15,7 +15,7 @@ type Shape = {
     radius:number
 }
 
-export async function draw(canvas:HTMLCanvasElement,roomId:string,socket:Socket,theme:string) {
+export async function draw(canvas:HTMLCanvasElement,roomName:string,socket:Socket,theme:string) {
     const ctx = canvas.getContext("2d")
     if (!ctx) return
 
@@ -23,11 +23,17 @@ export async function draw(canvas:HTMLCanvasElement,roomId:string,socket:Socket,
     (theme === "dark") ? strokeStyle = "rgb(255, 255, 255)" : strokeStyle = "rgb(0, 0, 0)"
     ctx.strokeStyle = strokeStyle
     
-    const shapes = await fetchShapes(roomId)
+    const shapes = await fetchShapes(roomName)
     console.log(shapes)
     if (!shapes) return // toast error
     const existingShapes:Shape[] = shapes
-
+    ctx.clearRect(0,0,canvas.width,canvas.height)
+    existingShapes.map((shape) => {
+        if (shape.type === "rect") {
+            ctx.strokeRect(shape.x,shape.y,shape.width,shape.height)
+        }
+    })
+    
     socket.on("message",(data) => {
         console.log("the data is: ",data)
         const shape:Shape = JSON.parse(data)
@@ -80,20 +86,20 @@ export async function draw(canvas:HTMLCanvasElement,roomId:string,socket:Socket,
             height: e.clientY - coordinates.y
         }
         existingShapes.push(newShape)
-        socket.emit("sendMessage",{roomName:roomId,message:JSON.stringify(newShape)})
+        socket.emit("sendMessage",{roomName,message:JSON.stringify(newShape)})
     })
 }
 
-async function fetchShapes(roomId:string):Promise<null | Shape[]> {
-    const res = await axios.get(`${API_URL}/chats/${roomId}`,{
+async function fetchShapes(roomName:string):Promise<null | Shape[]> {
+    const res = await axios.get(`${API_URL}/chats/${roomName}`,{
         headers: {
             Authorization: localStorage.getItem("token")
         }
     })
     if (!res.data.success) return null
     const messages = res.data.chats
-    const shapes = messages.map((message:string) => {
-        const shapeDetails = JSON.parse(message)
+    const shapes = messages.map((message:{content:string}) => {
+        const shapeDetails = JSON.parse(message.content)
         return shapeDetails
     })
     return shapes

@@ -9,7 +9,7 @@ import { io, Socket } from "socket.io-client"
 
 export default function Canvas() {
     const canvasRef = useRef<HTMLCanvasElement>(null)
-    const {roomId} = useParams()
+    const {roomName} = useParams()
     const socketRef = useRef<Socket>(null)
     const { theme } = useTheme()
 
@@ -26,11 +26,11 @@ export default function Canvas() {
             console.log("Connected to socket io server")
         })
         
-        socketRef.current.emit("join",roomId)    
+        socketRef.current.emit("join",roomName)    
 
         if (canvasRef.current) {
             
-            draw(canvasRef.current,(roomId as string),socketRef.current,theme as string)
+            draw(canvasRef.current,(roomName as string),socketRef.current,theme as string)
         }
 
         socketRef.current.on("disconnect" , () => {
@@ -38,7 +38,7 @@ export default function Canvas() {
         })
 
         return () => {
-            socketRef.current?.emit("leave",roomId)
+            socketRef.current?.emit("leave",roomName)
             socketRef.current?.disconnect()
         }
 

@@ -13,6 +13,7 @@ const io = new Server(server,{
   }
 });
 const PORT = 8080
+let userId = ""
 
 const redis = createClient()
 async function connect() {
@@ -38,6 +39,7 @@ io.use((socket,next) => {
             const err = new Error("Error while authenticating user in ws-server")
             next(err)  
         }
+        userId = decoded.userId
         next()
     } catch (err) {
         console.log(err)
@@ -56,7 +58,11 @@ io.on('connection', (socket) => {
   socket.on("sendMessage",(data:{roomName:string,message:string}) => {
     console.log(data)
     //push to a queue
-    redis.lPush(queueName,data.message)
+    redis.lPush(queueName,JSON.stringify({
+      roomName: data.roomName,
+      message: data.message,
+      userId
+    }))
     socket.to(data.roomName).emit("message",data.message); 
   })
 

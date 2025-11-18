@@ -117,21 +117,29 @@ app.post("/create-room",userAuthMiddleware,async(req,res) => {
 app.get("/chats/:roomName",userAuthMiddleware,async(req,res) => {
     const roomName = req.params.roomName
     try {
-        const existingRoom = await prisma.rooms.findFirst({
-            where: {
-                name: roomName
-            }
-        })
-        if (!existingRoom) return res.json({success: false,message:"Room doesnt exist with the following name"})
         const chats = await prisma.chats.findMany({
             where: {
-                roomId : existingRoom.id
+                roomName
             }, 
             orderBy : {
                 id : "desc"
+            },select: {
+                content:true
             },
             take:50
         })
+        // content
+        // : 
+        // "{\"type\":\"rect\",\"x\":882,\"y\":239,\"width\":-198,\"height\":120}"
+        // id
+        // : 
+        // 3
+        // roomName
+        // : 
+        // "laksh"
+        // userId
+        // : 
+        // "200d44ae-ea3a-44ed-8e48-281fedfc6d9e"
         if (!chats) return res.json({success: false,message: "Incorrect room ID"})
         return res.json({
             success:true,

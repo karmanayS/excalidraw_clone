@@ -32,10 +32,10 @@ model Rooms {
 }
 
 model Chats {
-  id      Int    @id @default(autoincrement())
-  content String
-  userId  String
-  roomId  Int
-  user    Users  @relation(fields: [userId], references: [id])
-  room    Rooms  @relation(fields: [roomId], references: [id])
+  id       Int    @id @default(autoincrement())
+  content  String
+  userId   String
+  roomName String
+  user     Users  @relation(fields: [userId], references: [id])
+  room     Rooms  @relation(fields: [roomName], references: [name])
 }

@@ -1,6 +1,6 @@
 import { queueName } from "@repo/common/common";
+import { prisma } from "@repo/db/client";
 import { createClient } from "redis";
-import { prisma } from "@repo/db"
  
 const redis = createClient()
 
@@ -10,8 +10,15 @@ async function main() {
         while (true) {
             const message = await redis.brPop(queueName,0)
             if (!message) return
-            console.log(message.element)
-            await 
+            const parsedData = JSON.parse(message.element)
+            console.log(parsedData)
+            await prisma.chats.create({
+                data: {
+                    roomName: parsedData.roomName,
+                    content: parsedData.message,
+                    userId: parsedData.userId        
+                }
+            })
         }
     } catch (err) {
         console.log(err)
