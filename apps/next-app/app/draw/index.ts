@@ -33,7 +33,7 @@ export async function draw(canvas:HTMLCanvasElement,roomName:string,socket:Socke
             ctx.strokeRect(shape.x,shape.y,shape.width,shape.height)
         }
     })
-    
+
     socket.on("message",(data) => {
         console.log("the data is: ",data)
         const shape:Shape = JSON.parse(data)
@@ -104,3 +104,5 @@ async function fetchShapes(roomName:string):Promise<null | Shape[]> {
     })
     return shapes
 }
+
+//comment
