@@ -16,3 +16,5 @@ export const roomSchema = z.object({
     name: z.string().min(4,{error: "Room name should be atleast 4 charachters long"})
 })
 
+export const queueName = "myqueue"
+
