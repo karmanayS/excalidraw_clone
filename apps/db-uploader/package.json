@@ -9,7 +9,12 @@
     "dev": "tsc -b && node dist/index.js"
   },
   "dependencies": {
-    "@repo/common": "workspace:*"
+    "@repo/common": "workspace:*",
+    "@repo/db" : "workspace:*",
+    "redis": "^5.9.0"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*"
   },
   "keywords": [],
   "author": "",

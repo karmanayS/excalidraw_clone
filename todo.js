@@ -15,6 +15,7 @@
 //For the chat app to store messages to db , first push them to a queue from ws-server and then a worker should push them to db
 //user should not be able t access dadshboard page and be redirected to signin if not already signed in
 //user should be only allowed to join a room that exists ==> check existing rooms in ws server
+//singleton for redis client
 
 //FE
 //toast message in Auth component

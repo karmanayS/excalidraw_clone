@@ -2,7 +2,8 @@ import express from "express"
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
 import jwt, { JwtPayload } from "jsonwebtoken"
-import { JWT_SECRET } from "@repo/common/common"
+import { JWT_SECRET, queueName } from "@repo/common/common"
+import { createClient } from "redis";
 
 const app = express()
 const server = createServer(app)
@@ -12,6 +13,20 @@ const io = new Server(server,{
   }
 });
 const PORT = 8080
+
+const redis = createClient()
+async function connect() {
+  try {
+    await redis.connect()
+    console.log("connected to redis...")
+  }
+  catch(err) {
+    console.log(err)
+    redis.quit()
+    return
+  }
+}
+connect()
 
 io.use((socket,next) => {
     console.log("Inside socket middleware")
@@ -41,7 +56,7 @@ io.on('connection', (socket) => {
   socket.on("sendMessage",(data:{roomName:string,message:string}) => {
     console.log(data)
     //push to a queue
-    
+    redis.lPush(queueName,data.message)
     socket.to(data.roomName).emit("message",data.message); 
   })
 
